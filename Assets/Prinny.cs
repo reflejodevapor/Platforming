@@ -5,12 +5,17 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Prinny : MonoBehaviour 
 {
+	[Header("Variables privadas de Prinny")]
 	[SerializeField]
 	private float potenciaSalto = 5;
 	[SerializeField]
 	private float velocidad = 5;
-	private Rigidbody2D rb;
+	[SerializeField]
+	private bool dobleSalto = true;
+	[Space(20)]
 	public Transform GOSalto;
+	private Rigidbody2D rb;
+
 
 
 	// Use this for initialization
@@ -25,10 +30,17 @@ public class Prinny : MonoBehaviour
 	void Update () 
 	{
 		float dir = Input.GetAxis ("Horizontal");
-		if (Input.GetKeyDown (KeyCode.Space) && Physics2D.OverlapPoint(GOSalto.position)) 
+		if (Input.GetKeyDown (KeyCode.Space)) 
 		{
-			rb.AddForce (Vector2.up * potenciaSalto, ForceMode2D.Impulse);
+			if (dobleSalto || Physics2D.OverlapPoint (GOSalto.position)) 
+			{
+				rb.AddForce (Vector2.up * potenciaSalto, ForceMode2D.Impulse);
+				dobleSalto = false;
+			}
+
 		}
+		if (Physics2D.OverlapPoint (GOSalto.position))
+			dobleSalto = true;
 		transform.Translate (dir * velocidad * Time.deltaTime, 0, 0);
 	}
 }
