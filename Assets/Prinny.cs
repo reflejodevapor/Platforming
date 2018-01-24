@@ -7,15 +7,18 @@ using UnityEngine;
 public class Prinny : MonoBehaviour 
 {
 	[Header("Variables privadas de Prinny")]
+	[Range(0, 10)]
 	[SerializeField]
 	private float potenciaSalto = 5;
 	[SerializeField]
 	private float velocidad = 5;
-	[SerializeField]
-	private bool dobleSalto = true;
 	[Space(20)]
 	public Transform GOSalto;
 	private Rigidbody2D rb;
+	[SerializeField]
+	private float MultiplicadorCaida = 3f;
+	[SerializeField]
+	private float MultiplicadorSaltoLento = 2f;
 
 
 
@@ -24,47 +27,35 @@ public class Prinny : MonoBehaviour
 	{
 		rb = GetComponent<Rigidbody2D> (); //inicializamos la variable del RigidBody
 		velocidad = 5;
-		potenciaSalto = 6;
+		potenciaSalto = 8.5f;
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		
 		if (Input.GetKeyDown (KeyCode.Space)) 
 		{
-			if (dobleSalto || Physics2D.OverlapPoint (GOSalto.position)) // Manejador de saltos
+			if (Physics2D.OverlapPoint (GOSalto.position)) // Manejador de saltos
 			{
-				rb.velocity = Vector2.zero;
-				rb.AddForce (Vector2.up * potenciaSalto, ForceMode2D.Impulse);
-				dobleSalto = false;
-			}
-
+				rb.velocity = Vector2.up * potenciaSalto;
+			} //aplicamos el salto
 		}
-		if (Physics2D.OverlapPoint (GOSalto.position)) // cuando está tocando el piso activamos el salto doble
-			dobleSalto = true;
-		
-		Vector2 S = GetComponent<SpriteRenderer> ().bounds.size;
-		GetComponent<BoxCollider2D> ().size = S;
-//		GetComponent<BoxCollider2D> ().offset;
+		if (rb.velocity.y < 0) 
+		{
+			rb.velocity += Vector2.up * Physics2D.gravity.y * (MultiplicadorCaida - 1) * Time.deltaTime;
+		} 
+		else if (rb.velocity.y > 0 && !Input.GetKey (KeyCode.Space)) 
+		{
+			rb.velocity += Vector2.up * Physics2D.gravity.y * (MultiplicadorSaltoLento - 1) * Time.deltaTime;
+		}
+		//Vector2 S = GetComponent<SpriteRenderer> ().bounds.size;
+		//GetComponent<BoxCollider2D> ().size = S; 
+		//GetComponent<BoxCollider2D> ().offset;
 	}
 
-	void FixedUpdate()
+	void FixedUpdate ()
 	{
 		float dir = Input.GetAxis ("Horizontal");
 		transform.Translate (dir * velocidad * Time.deltaTime, 0, 0);
 	}
-
-	void OnCollisionEnter2D(Collision2D col) 
-	{
-		if (col.gameObject.CompareTag("Walls"))
-			rb.velocity = Vector2.zero;
-	}
-
-	void OnCollisionStay2D(Collision2D col) 
-	{
-		if (col.gameObject.CompareTag("Walls"))
-			rb.velocity = Vector2.zero;
-	}
-
 }
