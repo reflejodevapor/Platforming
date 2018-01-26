@@ -12,13 +12,18 @@ public class Prinny : MonoBehaviour
 	private float potenciaSalto = 5;
 	[SerializeField]
 	private float velocidad = 5;
-	[Space(20)]
-	public Transform GOSalto;
-	private Rigidbody2D rb;
+	[SerializeField]
+	private bool Atacando = false;
 	[SerializeField]
 	private float MultiplicadorCaida = 3f;
 	[SerializeField]
 	private float MultiplicadorSaltoLento = 2f;
+	[Space(20)]
+	public Transform GOSalto;
+	public GameObject GOAtaque;
+	private Rigidbody2D rb;
+	private float DistanciaAtaque = 1.21f;
+
 
 
 
@@ -28,6 +33,7 @@ public class Prinny : MonoBehaviour
 		rb = GetComponent<Rigidbody2D> (); //inicializamos la variable del RigidBody
 		velocidad = 4.5f;
 		potenciaSalto = 8.85f;
+		GOAtaque.GetComponent<BoxCollider2D> ().enabled = false;
 	}
 	
 	// Update is called once per frame
@@ -48,14 +54,29 @@ public class Prinny : MonoBehaviour
 		{
 			rb.velocity += Vector2.up * Physics2D.gravity.y * (MultiplicadorSaltoLento - 1) * Time.deltaTime;
 		}
-		//Vector2 S = GetComponent<SpriteRenderer> ().bounds.size;
-		//GetComponent<BoxCollider2D> ().size = S; 
-		//GetComponent<BoxCollider2D> ().offset;
+
+		if (Input.GetMouseButtonDown (0)) 
+		{
+			StartCoroutine (Ataca ());
+		}
+	}
+
+	IEnumerator Ataca()
+	{
+		Atacando = true;
+		GOAtaque.GetComponent<BoxCollider2D> ().enabled = true;
+		yield return new WaitForSeconds (0.5f);
+		GOAtaque.GetComponent<BoxCollider2D> ().enabled = false;
+		Atacando = false;
 	}
 
 	void FixedUpdate ()
 	{
 		float dir = Input.GetAxis ("Horizontal");
 		transform.Translate (dir * velocidad * Time.deltaTime, 0, 0);
+		if (dir > 0)
+			GOAtaque.transform.localPosition = new Vector3(DistanciaAtaque, 0, 0);
+		else if (dir < 0)
+			GOAtaque.transform.localPosition = new Vector3(DistanciaAtaque*-1, 0, 0);
 	}
 }
