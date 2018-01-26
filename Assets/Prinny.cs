@@ -26,8 +26,8 @@ public class Prinny : MonoBehaviour
 	void Start () 
 	{
 		rb = GetComponent<Rigidbody2D> (); //inicializamos la variable del RigidBody
-		velocidad = 5;
-		potenciaSalto = 8.5f;
+		velocidad = 4.5f;
+		potenciaSalto = 8.85f;
 	}
 	
 	// Update is called once per frame
