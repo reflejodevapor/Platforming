@@ -13,16 +13,14 @@ public class Prinny : MonoBehaviour
 	[SerializeField]
 	private float velocidad = 5;
 	[SerializeField]
-	private bool Atacando = false;
-	[SerializeField]
 	private float MultiplicadorCaida = 3f;
 	[SerializeField]
 	private float MultiplicadorSaltoLento = 2f;
 	[Space(20)]
 	public Transform GOSalto;
-	public GameObject GOAtaque;
 	private Rigidbody2D rb;
-	private float DistanciaAtaque = 1.21f;
+	private float DistanciaAtaque = 1.29f;
+	private Vector2 AreaAtaque;
 
 
 
@@ -33,7 +31,8 @@ public class Prinny : MonoBehaviour
 		rb = GetComponent<Rigidbody2D> (); //inicializamos la variable del RigidBody
 		velocidad = 4.5f;
 		potenciaSalto = 8.85f;
-		GOAtaque.GetComponent<BoxCollider2D> ().enabled = false;
+		AreaAtaque = new Vector2 (0.93f, 1.72f);
+		GetComponents<BoxCollider2D> () [1].size = Vector2.zero;
 	}
 	
 	// Update is called once per frame
@@ -57,26 +56,30 @@ public class Prinny : MonoBehaviour
 
 		if (Input.GetMouseButtonDown (0)) 
 		{
-			StartCoroutine (Ataca ());
+			GetComponents<BoxCollider2D> () [1].size = AreaAtaque;
+		}
+		if (Input.GetMouseButtonUp (0)) 
+		{
+			GetComponents<BoxCollider2D> () [1].size = Vector2.zero;
 		}
 	}
 
-	IEnumerator Ataca()
+	void OnTriggerEnter2D(Collider2D other) 
 	{
-		Atacando = true;
-		GOAtaque.GetComponent<BoxCollider2D> ().enabled = true;
-		yield return new WaitForSeconds (0.5f);
-		GOAtaque.GetComponent<BoxCollider2D> ().enabled = false;
-		Atacando = false;
+		if (other.gameObject.CompareTag ("Enemigo"))
+			Debug.Log ("HIT " + other.gameObject.name);
 	}
 
 	void FixedUpdate ()
 	{
 		float dir = Input.GetAxis ("Horizontal");
 		transform.Translate (dir * velocidad * Time.deltaTime, 0, 0);
-		if (dir > 0)
-			GOAtaque.transform.localPosition = new Vector3(DistanciaAtaque, 0, 0);
-		else if (dir < 0)
-			GOAtaque.transform.localPosition = new Vector3(DistanciaAtaque*-1, 0, 0);
+		if (dir > 0) 
+		{
+			GetComponents<BoxCollider2D> () [1].offset = new Vector2 (DistanciaAtaque, 0);
+		} else if (dir < 0) 
+		{
+			GetComponents<BoxCollider2D> () [1].offset = new Vector2 (DistanciaAtaque * -1, 0);
+		}
 	}
 }
