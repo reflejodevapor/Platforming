@@ -16,11 +16,18 @@ public class Prinny : MonoBehaviour
 	private float MultiplicadorCaida = 3f;
 	[SerializeField]
 	private float MultiplicadorSaltoLento = 2f;
+	[SerializeField]
+	private float FuerzaDisparo;
 	[Space(20)]
 	public Transform GOSalto;
 	private Rigidbody2D rb;
 	private float DistanciaAtaque = 1.29f;
 	private Vector2 AreaAtaque;
+	private bool AtaqueAereo = false;
+	public GameObject ondaAerea;
+	private List<GameObject> pool;
+	private int nOndas = 4;
+	private float dir;
 
 
 
@@ -33,6 +40,22 @@ public class Prinny : MonoBehaviour
 		potenciaSalto = 8.85f;
 		AreaAtaque = new Vector2 (0.93f, 1.72f);
 		GetComponents<BoxCollider2D> () [1].size = Vector2.zero;
+		pool = new List<GameObject> ();
+		for (int i = 0; i < nOndas; i++) 
+		{
+			GameObject go = (GameObject)Instantiate (ondaAerea);
+			go.SetActive (false);
+			pool.Add (go);
+		}
+		FuerzaDisparo = 5;
+	}
+
+	GameObject obtenerGOPool()
+	{
+		for (int i = 0; i < pool.Count; i++) 
+			if (!pool [i].activeInHierarchy)
+				return pool [i];
+		return null;
 	}
 	
 	// Update is called once per frame
@@ -56,12 +79,42 @@ public class Prinny : MonoBehaviour
 
 		if (Input.GetMouseButtonDown (0)) 
 		{
-			GetComponents<BoxCollider2D> () [1].size = AreaAtaque;
+			if (rb.velocity.y != 0) { // o sea que esta en movimiento vertical
+				StartCoroutine(PermaneceAire());
+				StartCoroutine (LanzaOndas ());
+			} 
+			else 
+			{
+				GetComponents<BoxCollider2D> () [1].size = AreaAtaque;
+			}
 		}
 		if (Input.GetMouseButtonUp (0)) 
 		{
 			GetComponents<BoxCollider2D> () [1].size = Vector2.zero;
 		}
+		if (AtaqueAereo)
+			rb.velocity -= rb.velocity;
+	}
+	IEnumerator LanzaOndas()
+	{
+		while (AtaqueAereo) 
+		{
+			GameObject onda = obtenerGOPool ();
+			if (onda != null) {
+				onda.transform.position = transform.position;
+				onda.transform.rotation = transform.rotation;
+				onda.SetActive (true);
+				bool d = (GetComponents<BoxCollider2D> () [1].offset.x > 0);
+				onda.gameObject.GetComponent<Rigidbody2D> ().AddForce (new Vector2 ((d) ? FuerzaDisparo : FuerzaDisparo * -1, -5), ForceMode2D.Impulse);
+				yield return new WaitForSeconds (0.2f);
+			} 
+			else 
+			{
+				yield return new WaitForSeconds (0f);
+			}
+
+		}
+		yield return new WaitForSeconds (0);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) 
@@ -72,7 +125,9 @@ public class Prinny : MonoBehaviour
 
 	void FixedUpdate ()
 	{
-		float dir = Input.GetAxis ("Horizontal");
+		if (AtaqueAereo)
+			return;
+		dir = Input.GetAxis ("Horizontal");
 		transform.Translate (dir * velocidad * Time.deltaTime, 0, 0);
 		if (dir > 0) 
 		{
@@ -81,5 +136,12 @@ public class Prinny : MonoBehaviour
 		{
 			GetComponents<BoxCollider2D> () [1].offset = new Vector2 (DistanciaAtaque * -1, 0);
 		}
+	}
+
+	IEnumerator PermaneceAire()
+	{
+		AtaqueAereo = true;
+		yield return new WaitForSeconds (0.7f);
+		AtaqueAereo = false;
 	}
 }
