@@ -1,12 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
 public class Prinny : MonoBehaviour 
 {
 	[Header("Variables privadas de Prinny")]
+	[Range(0, 10)]
+	[SerializeField]
+	private int vidas = 5;
 	[Range(0, 10)]
 	[SerializeField]
 	private float potenciaSalto = 5;
@@ -24,7 +28,7 @@ public class Prinny : MonoBehaviour
 	private float DistanciaAtaque = 1.29f;
 	private Vector2 AreaAtaque;
 	private bool AtaqueAereo = false;
-	public GameObject ondaAerea;
+	public Image img_vida;
 	private List<GameObject> pool;
 	private int nOndas = 4;
 	private float dir;
@@ -43,7 +47,7 @@ public class Prinny : MonoBehaviour
 		pool = new List<GameObject> ();
 		for (int i = 0; i < nOndas; i++) 
 		{
-			GameObject go = (GameObject)Instantiate (ondaAerea);
+			GameObject go = (GameObject)Instantiate (Resources.Load("Aereo"));
 			go.SetActive (false);
 			pool.Add (go);
 		}
@@ -120,7 +124,7 @@ public class Prinny : MonoBehaviour
 	void OnTriggerEnter2D(Collider2D other) 
 	{
 		if (other.gameObject.CompareTag ("Enemigo"))
-			Debug.Log ("HIT " + other.gameObject.name);
+			other.gameObject.GetComponent<Enemigo> ().RecibeDano ();
 	}
 
 	void FixedUpdate ()
@@ -135,6 +139,15 @@ public class Prinny : MonoBehaviour
 		} else if (dir < 0) 
 		{
 			GetComponents<BoxCollider2D> () [1].offset = new Vector2 (DistanciaAtaque * -1, 0);
+		}
+	}
+
+	void OnCollisionEnter2D(Collision2D _col)
+	{
+		if (_col.gameObject.CompareTag ("Enemigo")) 
+		{
+			vidas--;
+			img_vida.fillAmount = ((float)vidas / 5);
 		}
 	}
 

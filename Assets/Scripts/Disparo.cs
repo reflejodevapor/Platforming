@@ -7,7 +7,8 @@ using UnityEngine;
 public class Disparo : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D coll) {
+		if (coll.gameObject.CompareTag ("Enemigo"))
+			coll.gameObject.GetComponent<Enemigo> ().RecibeDano ();
 		gameObject.SetActive (false);
-
 	}
 }

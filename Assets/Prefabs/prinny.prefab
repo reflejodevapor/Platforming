@@ -172,12 +172,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bc2dfd2dbaafdb4f97bbe2907aa2664, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  vidas: 5
   potenciaSalto: 8.5
   velocidad: 5
   MultiplicadorCaida: 3
   MultiplicadorSaltoLento: 2
+  FuerzaDisparo: 0
   GOSalto: {fileID: 4766636777254712}
   ondaAerea: {fileID: 1890341197863438, guid: 15d78a451a8a66040bc7c5e6ec972b25, type: 2}
+  img_vida: {fileID: 0}
 --- !u!212 &212960427232963314
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -187,6 +190,7 @@ SpriteRenderer:
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -202,6 +206,7 @@ SpriteRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
   m_SelectedEditorRenderState: 0
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
