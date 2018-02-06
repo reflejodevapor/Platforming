@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-sceneSetups: []
-=======
 sceneSetups:
 - path: Assets/1.unity
   isLoaded: 1
   isActive: 1
->>>>>>> enviro

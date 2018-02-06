@@ -98,7 +98,6 @@
 -define:UNITY_EDITOR_WIN
 -define:ENABLE_NATIVE_ARRAY_CHECKS
 -define:UNITY_TEAM_LICENSE
--define:ENABLE_VSTU
 Assets/Scripts/CameraFollow.cs
 Assets/Scripts/Disparo.cs
 Assets/Scripts/Enemigo.cs

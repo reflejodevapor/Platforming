@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
@@ -24,6 +25,7 @@ public class Prinny : MonoBehaviour
 	private float FuerzaDisparo;
 	[Space(20)]
 	public Transform GOSalto;
+	public GameObject ataque;
 	private Rigidbody2D rb;
 	private float DistanciaAtaque = 1.29f;
 	private Vector2 AreaAtaque;
@@ -42,7 +44,7 @@ public class Prinny : MonoBehaviour
 		rb = GetComponent<Rigidbody2D> (); //inicializamos la variable del RigidBody
 		velocidad = 4.5f;
 		potenciaSalto = 8.85f;
-		AreaAtaque = new Vector2 (0.93f, 1.72f);
+		AreaAtaque = new Vector2 (0.8701704f, 1.375978f);
 		GetComponents<BoxCollider2D> () [1].size = Vector2.zero;
 		pool = new List<GameObject> ();
 		for (int i = 0; i < nOndas; i++) 
@@ -52,6 +54,7 @@ public class Prinny : MonoBehaviour
 			pool.Add (go);
 		}
 		FuerzaDisparo = 5;
+		ataque.GetComponent<SpriteRenderer> ().enabled = false;
 	}
 
 	GameObject obtenerGOPool()
@@ -90,14 +93,22 @@ public class Prinny : MonoBehaviour
 			else 
 			{
 				GetComponents<BoxCollider2D> () [1].size = AreaAtaque;
+				ataque.GetComponent<SpriteRenderer> ().enabled = true;
 			}
 		}
 		if (Input.GetMouseButtonUp (0)) 
 		{
 			GetComponents<BoxCollider2D> () [1].size = Vector2.zero;
+			ataque.GetComponent<SpriteRenderer> ().enabled = false;
 		}
 		if (AtaqueAereo)
 			rb.velocity -= rb.velocity;
+
+		if (vidas == 0) 
+		{
+			SceneManager.LoadScene ("1");
+		}
+
 	}
 	IEnumerator LanzaOndas()
 	{
@@ -136,9 +147,13 @@ public class Prinny : MonoBehaviour
 		if (dir > 0) 
 		{
 			GetComponents<BoxCollider2D> () [1].offset = new Vector2 (DistanciaAtaque, 0);
+			ataque.transform.localPosition = new Vector3 (DistanciaAtaque, 0, 0);
+			ataque.GetComponent<SpriteRenderer> ().flipX = false;
 		} else if (dir < 0) 
 		{
 			GetComponents<BoxCollider2D> () [1].offset = new Vector2 (DistanciaAtaque * -1, 0);
+			ataque.transform.localPosition = new Vector3 (DistanciaAtaque*-1, 0, 0);
+			ataque.GetComponent<SpriteRenderer> ().flipX = true;
 		}
 	}
 
