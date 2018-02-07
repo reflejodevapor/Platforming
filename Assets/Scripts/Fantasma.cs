@@ -16,6 +16,12 @@ public class Fantasma : Enemigo {
 	// Update is called once per frame
 	void FixedUpdate () {
 		// Set our position as a fraction of the distance between the markers.
-		transform.position = Vector3.Lerp(origen, destino, Mathf.PingPong(Time.time, 1));
+		float t = Mathf.PingPong(Time.time, 1);
+		if (t == 1)
+			GetComponent<SpriteRenderer> ().flipX = false;
+		else if (t == 0)
+			GetComponent<SpriteRenderer> ().flipX = true;
+		transform.position = Vector3.Lerp(origen, destino, t);
+
 	}
 }
