@@ -9,6 +9,7 @@ TagManager:
   - LimitY
   - Enemigo
   - Disparo
+  - WinArea
   layers:
   - Default
   - TransparentFX

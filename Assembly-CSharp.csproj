@@ -55,6 +55,7 @@
      <Compile Include="Assets\Scripts\Disparo.cs" />
      <Compile Include="Assets\Scripts\Enemigo.cs" />
      <Compile Include="Assets\Scripts\Fantasma.cs" />
+     <Compile Include="Assets\Scripts\GameWin.cs" />
      <Compile Include="Assets\Scripts\Prinny.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

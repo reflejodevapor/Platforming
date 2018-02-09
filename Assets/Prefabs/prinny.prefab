@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 61872499170513342}
   m_Layer: 10
   m_Name: prinny
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
